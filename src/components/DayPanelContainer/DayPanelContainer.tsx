@@ -60,7 +60,7 @@ class DayPanelContainer extends Component<Props, States> {
                     if (dayReference.toUpperCase() === "TODAY") {
                         milanoData = json
                     } else {
-                        milanoData = json.list[0]
+                        milanoData = json.list[7]
                         milanoData.name = json.city.name
                     }
                     this.setState({milanoData})
@@ -81,7 +81,7 @@ class DayPanelContainer extends Component<Props, States> {
                     if (dayReference.toUpperCase() === "TODAY") {
                         berlinoData = json
                     } else {
-                        berlinoData = json.list[0]
+                        berlinoData = json.list[7]
                         berlinoData.name = json.city.name
                     }
                     this.setState({berlinoData})
@@ -120,6 +120,10 @@ const DayPanel = ({cityData}: { cityData: any }) => {
     return cityData ?
         <Col xs={12} sm={6}>
             <div className={"DayPanel Card"}>
+                <section >
+                    <div className={"wave wave1"}/>
+                    <div className={"wave wave2"}/>
+                    <div className={"wave wave3"}/>
 
                 <Row>
                     <Col xs={6}>
@@ -134,6 +138,7 @@ const DayPanel = ({cityData}: { cityData: any }) => {
                         <span style={{fontSize: "calc(30px + 2vmin)"}}> {cityData.main.temp}° </span>
                     </Col>
                 </Row>
+                </section>
             </div>
         </Col>
         : null
