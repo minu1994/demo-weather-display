@@ -1,7 +1,7 @@
 
 export function getMock(city: string) {
     if (city.toUpperCase() === "MILANO") {
-        return {
+        return  {
             "coord": {"lon": 9.19, "lat": 45.46},
             "weather": [{"id": 800, "main": "Clear", "description": "clear sky", "icon": "01n"}],
             "base": "stations",
@@ -38,11 +38,4 @@ export function getMock(city: string) {
         }
     }
     return undefined
-}
-
-export function fetchAPI(URL: string, cityID: number, appID: string, callback: any) {
-    const composedURL = URL + "&appid=" + appID + "&id=" + cityID
-    fetch(composedURL)
-        .then(response => response.json())
-        .then(callback)
 }

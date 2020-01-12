@@ -1,86 +1,59 @@
-import React, {Component, createRef} from "react";
-import {Navbar, Row, Col, Alert, Button, Modal} from "react-bootstrap";
+import React, {FC, useRef, useState} from "react";
+import {Navbar, Row, Button, Modal} from "react-bootstrap";
 import "./RouterNavigator.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog } from '@fortawesome/free-solid-svg-icons'
-
 import {
     BrowserRouter as Router,
     Switch,
-    Route, Redirect, NavLink
+    Route, Redirect
 } from "react-router-dom"
 import DayPanelContainer from "../DayPanelContainer/DayPanelContainer";
+import WarningDatiFittizi from "./WarningDatiFittizi";
+import ColumnNavLink from "./ColumnNavLink";
 
-const ColumnNav = ({to, label}: { to: string, label: string }) => (
-    <Col xs={6}>
-        <NavLink
-            activeStyle={{
-                fontWeight: "bold", textDecoration: "underline"
-            }}
-            to={to}>
-            {label}
-        </NavLink>
-    </Col>
-)
-
-const WarningDatiFittizi = ({isVisible}: { isVisible: boolean | undefined}) => (
-    isVisible ?
-        <Alert variant="warning">
-            <Alert.Heading>Attenzione</Alert.Heading>
-            <p>
-                I dati che stai visualizzando sono fittizi.
-                Inserire l'api key cliccando su <FontAwesomeIcon icon={faCog}/>
-            </p>
-        </Alert>
-        : null
-)
-
-interface States {
-    showModalConfig: boolean,
-    apiID?: string
+interface Props {
+    // no props
 }
-class RouterNavigator extends Component<{}, States> {
-
-    state: States = {
-        showModalConfig: false
-    }
-
-    private inputRef = createRef<HTMLInputElement>()
-
-    render() {
+const RouterNavigator: FC<Props> = () => {
+    const [showModalConfig, setShowModalConfig] = useState<boolean>(false)
+    const [apiID, setApiID] = useState<string>("")
+    const inputRef = useRef<HTMLInputElement>(null)
     return <Router>
         <div>
             <Navbar bg="dark" variant="dark" style={{justifyContent: "space-between"}}>
                 <Navbar.Brand>Demo Weather Display</Navbar.Brand>
                 <Button
-                    onClick={()=>this.setState({showModalConfig: true})}
+                    onClick={() => setShowModalConfig(true)}
                     variant={"secondary"}
                     className={"buttonCogIcon"}>
                     <FontAwesomeIcon className={"cogIcon"} icon={faCog}/>
                 </Button>
             </Navbar>
 
-            <Modal show={this.state.showModalConfig} onHide={()=> this.setState({showModalConfig: false})}>
+            <Modal show={showModalConfig} onHide={()=> setShowModalConfig(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>Configurazione</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {this.state.showModalConfig && this.state.apiID &&
-                        <p> API Key attuale: {this.state.apiID}</p>
+                    {showModalConfig && apiID &&
+                        <p> API Key attuale: {apiID}</p>
                     }
                     <p>
                     Inserisci un API Key:
                     </p>
-                    <input ref={this.inputRef}/>
+                    <input className={"col-12"} ref={inputRef}/>
 
                 </Modal.Body>
                 <Modal.Footer>
 
                     <Button
-                        onClick={()=>
-                            this.inputRef && this.inputRef.current ?
-                                this.setState({apiID: this.inputRef.current.value, showModalConfig: false})
-                            : undefined}
+                        onClick={() => {
+                            if(inputRef && inputRef.current) {
+                                setApiID(inputRef.current.value)
+                                setShowModalConfig(false)
+                            }
+                        }}
                         variant="primary" >
                         Salva
                     </Button>
@@ -89,25 +62,28 @@ class RouterNavigator extends Component<{}, States> {
 
             <div>
                 <Row className={"no-gutters"}>
-                    <ColumnNav to={"/Today"} label={"Oggi"}/>
-                    <ColumnNav to={"/Tomorrow"} label={"Domani"}/>
+                    <ColumnNavLink to={"/Today"} label={"Oggi"}
+                    />
+                    <ColumnNavLink to={"/Tomorrow"} label={"Domani"}
+                    />
                 </Row>
             </div>
 
-            <WarningDatiFittizi isVisible={!this.state.apiID}/>
+            <WarningDatiFittizi
+                isVisible={!apiID}
+                onClickCog={() => setShowModalConfig(true)}
+            />
             <Switch>
                 <Route path="/Today">
-                    <DayPanelContainer apiID={this.state.apiID} dayReference={"Today"}/>
+                    {<DayPanelContainer apiID={apiID} dayReference={"Today"}  />}
                 </Route>
                 <Route path="/Tomorrow">
-                    <DayPanelContainer apiID={this.state.apiID} dayReference={"Tomorrow"}/>
+                    {<DayPanelContainer apiID={apiID} dayReference={"Tomorrow"}/>}
                 </Route>
                 <Redirect to={"Today"}/>
             </Switch>
         </div>
     </Router>
-    }
 }
-
 
 export default RouterNavigator

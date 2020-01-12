@@ -1,7 +1,8 @@
-import React, {Component} from "react";
+import React, {FC, useEffect, useState} from "react";
 import {Alert, Col, Row} from "react-bootstrap";
 import "./DayPanel.css"
-import {fetchAPI, getMock} from "../../API Utils";
+import {fetchAPI} from "../../Utils/API Utils";
+import {getMock} from "../../Utils/MockUtils";
 import Moment from "react-moment";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faSun, faCloudSun, faCloudRain} from '@fortawesome/free-solid-svg-icons'
@@ -11,23 +12,15 @@ interface Props {
     apiID?: string
 }
 
-interface States {
-    milanoData: any,
-    berlinoData: any
-}
-
 // ids from https://openweathermap.org/city/
 const ITALY_MILAN_ID: number = 6542283
 const GERMAN_BERLIN_ID: number = 2950159
 
-class DayPanelContainer extends Component<Props, States> {
+const DayPanelContainer: FC<Props> = ({dayReference, apiID}) => {
+    const [milanoData, setMilanoData] = useState<any>(getMock("MILANO"))
+    const [berlinoData, setBerlinoData] = useState<any>(getMock("BERLINO"))
 
-    state: States = {
-        milanoData: getMock("MILANO"),
-        berlinoData: getMock("BERLINO")
-    }
-
-    getURL(dayReference: string) {
+    function getURL(dayReference: string) {
         if (dayReference.toUpperCase() === "TODAY") {
             return "https://api.openweathermap.org/data/2.5/weather?units=metric"
         } else if (dayReference.toUpperCase() === "TOMORROW") {
@@ -36,24 +29,22 @@ class DayPanelContainer extends Component<Props, States> {
         return ""
     }
 
-    componentDidUpdate(propsPrecedenti: any) {
-        const {apiID, dayReference} = this.props
-        console.log("apiID: ", apiID)
+    useEffect(() => {
         if (!apiID) {
             return
         }
-        console.log("apiid from componentdidupdate:", apiID)
-        if ((apiID !== propsPrecedenti.apiID) ||
-            (dayReference !== propsPrecedenti.dayReference)) {
+        console.log("apiid:", apiID)
+        if(apiID || dayReference) {
+        //if ((apiID !== propsPrecedenti.apiID) || (dayReference !== propsPrecedenti.dayReference)) {
             fetchAPI(
-                this.getURL(dayReference),
+                getURL(dayReference),
                 ITALY_MILAN_ID,
                 apiID,
                 (json: any) => {
                     let milanoData = undefined
 
                     if (json && json.cod === 401) {
-                        this.setState({milanoData: json})
+                        setMilanoData(json)
                         return
                     }
 
@@ -63,18 +54,18 @@ class DayPanelContainer extends Component<Props, States> {
                         milanoData = json.list[7]
                         milanoData.name = json.city.name
                     }
-                    this.setState({milanoData})
+                    setMilanoData(milanoData)
                 }
             );
             fetchAPI(
-                this.getURL(dayReference),
+                getURL(dayReference),
                 GERMAN_BERLIN_ID,
                 apiID,
                 (json: any) => {
                     let berlinoData = undefined
 
                     if (json && json.cod === 401) {
-                        this.setState({berlinoData: json})
+                        setBerlinoData(json)
                         return
                     }
 
@@ -84,19 +75,18 @@ class DayPanelContainer extends Component<Props, States> {
                         berlinoData = json.list[7]
                         berlinoData.name = json.city.name
                     }
-                    this.setState({berlinoData})
+                    setBerlinoData(berlinoData)
                 });
         }
-    }
+    }, [apiID, dayReference])
 
-    render() {
-        const {milanoData, berlinoData} = this.state
-        if ((milanoData && milanoData.cod === 401) ||
-            (berlinoData && berlinoData.cod === 401)) {
-            return <Alert variant="danger">
-                <Alert.Heading>Errore</Alert.Heading>
-                <p>
-                    Api Key non valida. Si prega di reinserirla.
+
+    if ((milanoData && milanoData.cod === 401) ||
+        (berlinoData && berlinoData.cod === 401)) {
+        return <Alert variant="danger">
+            <Alert.Heading>Errore</Alert.Heading>
+            <p>
+                Api Key non valida. Si prega di reinserirla.
                 </p>
             </Alert>
         }
@@ -106,8 +96,8 @@ class DayPanelContainer extends Component<Props, States> {
                 <DayPanel cityData={berlinoData}/>
             </Row>
         </div>
-    }
 }
+
 
 const DayPanel = ({cityData}: { cityData: any }) => {
 
