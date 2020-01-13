@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from "react";
 import {Alert, Col, Row} from "react-bootstrap";
 import "./DayPanel.css"
-import {fetchAPI} from "../../Utils/API Utils";
+import {GERMAN_BERLIN_ID, ITALY_MILAN_ID} from "../../Utils/API Utils";
 import {getMock} from "../../Utils/MockUtils";
 import Moment from "react-moment";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -12,13 +12,14 @@ interface Props {
     apiID?: string
 }
 
-// ids from https://openweathermap.org/city/
-const ITALY_MILAN_ID: number = 6542283
-const GERMAN_BERLIN_ID: number = 2950159
+
 
 const DayPanelContainer: FC<Props> = ({dayReference, apiID}) => {
-    const [milanoData, setMilanoData] = useState<any>(getMock("MILANO"))
-    const [berlinoData, setBerlinoData] = useState<any>(getMock("BERLINO"))
+    const cities = [ITALY_MILAN_ID, GERMAN_BERLIN_ID]
+    const citiesURL = cities.map(cityID => getURL(dayReference) + "&appid=" + apiID + "&id=" + cityID )
+
+    const [stateCities, setStateCities] = useState<any>(cities.map((cityID => getMock(cityID))))
+    const [isLoading, setIsLoading] = useState<boolean>(false)
 
     function getURL(dayReference: string) {
         if (dayReference.toUpperCase() === "TODAY") {
@@ -29,73 +30,64 @@ const DayPanelContainer: FC<Props> = ({dayReference, apiID}) => {
         return ""
     }
 
+    function getCityDataFromFetch(json: any) {
+        if (json && (json.cod == 401 || json.cod == 404 )) {
+            return json
+        }
+
+        let cityData = undefined
+        if (dayReference.toUpperCase() === "TODAY") {
+            cityData = json
+        } else {
+            cityData = json.list[7]
+            cityData.name = json.city.name
+        }
+        return cityData
+    }
     useEffect(() => {
         if (!apiID) {
             return
         }
         console.log("apiid:", apiID)
         if(apiID || dayReference) {
-        //if ((apiID !== propsPrecedenti.apiID) || (dayReference !== propsPrecedenti.dayReference)) {
-            fetchAPI(
-                getURL(dayReference),
-                ITALY_MILAN_ID,
-                apiID,
-                (json: any) => {
-                    let milanoData = undefined
+            setIsLoading(true)
+            Promise.all(citiesURL.map(url=>fetch(url))).then(responses =>
+                Promise.all(responses.map(res => res.json()))
+            ).then(jsons => {
+                setStateCities(
+                    jsons.map(json => getCityDataFromFetch(json))
+                )
+                setIsLoading(false)
+            })
 
-                    if (json && json.cod === 401) {
-                        setMilanoData(json)
-                        return
-                    }
-
-                    if (dayReference.toUpperCase() === "TODAY") {
-                        milanoData = json
-                    } else {
-                        milanoData = json.list[7]
-                        milanoData.name = json.city.name
-                    }
-                    setMilanoData(milanoData)
-                }
-            );
-            fetchAPI(
-                getURL(dayReference),
-                GERMAN_BERLIN_ID,
-                apiID,
-                (json: any) => {
-                    let berlinoData = undefined
-
-                    if (json && json.cod === 401) {
-                        setBerlinoData(json)
-                        return
-                    }
-
-                    if (dayReference.toUpperCase() === "TODAY") {
-                        berlinoData = json
-                    } else {
-                        berlinoData = json.list[7]
-                        berlinoData.name = json.city.name
-                    }
-                    setBerlinoData(berlinoData)
-                });
         }
     }, [apiID, dayReference])
 
+    function isInvalidApiKey() {
+        let isInvalid = false
+        stateCities.forEach((city:any) => {
+            if (city && city.cod == 401) {
+                isInvalid = true
+            }
+        })
+        return isInvalid
+    }
 
-    if ((milanoData && milanoData.cod === 401) ||
-        (berlinoData && berlinoData.cod === 401)) {
+    if (isInvalidApiKey()) {
         return <Alert variant="danger">
             <Alert.Heading>Errore</Alert.Heading>
             <p>
                 Api Key non valida. Si prega di reinserirla.
                 </p>
-            </Alert>
-        }
-        return <div style={{margin: 30}}>
-            <Row>
-                <DayPanel cityData={milanoData}/>
-                <DayPanel cityData={berlinoData}/>
-            </Row>
-        </div>
+        </Alert>
+    }
+    if(isLoading)
+        return <div style={{fontSize: 40}}> caricamento... </div>
+    return <div style={{margin: 30}}>
+        <Row>
+            {stateCities && stateCities.map((city:any) => <DayPanel cityData={city}/>)}
+        </Row>
+    </div>
 }
 
 
@@ -107,10 +99,20 @@ const DayPanel = ({cityData}: { cityData: any }) => {
         if (main === "Rain") return <FontAwesomeIcon icon={faCloudRain}/>
     }
 
-    return cityData ?
-        <Col xs={12} sm={6}>
+    if(!cityData)
+        return null
+
+    if(cityData.cod == 404) {
+        return  <Col xs={12} sm={6}>
             <div className={"DayPanel Card"}>
-                <section >
+                <section style={{fontSize: "calc(50px + 2vmin)", padding: 20}}> Città non trovata. </section>
+            </div>
+        </Col>
+    }
+
+    return <Col xs={12} sm={6}>
+            <div className={"DayPanel Card"}>
+                <section>
                     <div className={"wave wave1"}/>
                     <div className={"wave wave2"}/>
                     <div className={"wave wave3"}/>
@@ -131,7 +133,6 @@ const DayPanel = ({cityData}: { cityData: any }) => {
                 </section>
             </div>
         </Col>
-        : null
 }
 
 export default DayPanelContainer

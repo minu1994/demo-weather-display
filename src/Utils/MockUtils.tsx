@@ -1,6 +1,7 @@
+import {GERMAN_BERLIN_ID, ITALY_MILAN_ID} from "./API Utils";
 
-export function getMock(city: string) {
-    if (city.toUpperCase() === "MILANO") {
+export function getMock(cityID: number) {
+    if (cityID === ITALY_MILAN_ID) {
         return  {
             "coord": {"lon": 9.19, "lat": 45.46},
             "weather": [{"id": 800, "main": "Clear", "description": "clear sky", "icon": "01n"}],
@@ -18,7 +19,7 @@ export function getMock(city: string) {
             "cod": 200
         }
     }
-    if (city.toUpperCase() === "BERLINO") {
+    if (cityID === GERMAN_BERLIN_ID) {
         return {
             "coord": {"lon": 13.41, "lat": 52.52},
             "weather": [{"id": 803, "main": "Clouds", "description": "broken clouds", "icon": "04n"}],
