@@ -1,5 +1,5 @@
-import React, {FC, useRef, useState} from "react";
-import {Navbar, Row, Button, Modal} from "react-bootstrap";
+import React, {FC, useState} from "react";
+import {Navbar, Row, Button} from "react-bootstrap";
 import "./RouterNavigator.css"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCog } from '@fortawesome/free-solid-svg-icons'
@@ -11,6 +11,7 @@ import {
 import DayPanelContainer from "../DayPanelContainer/DayPanelContainer";
 import WarningDatiFittizi from "./WarningDatiFittizi";
 import ColumnNavLink from "./ColumnNavLink";
+import ConfigurationModal from "./ConfigurationModal";
 
 interface Props {
     // no props
@@ -18,7 +19,6 @@ interface Props {
 const RouterNavigator: FC<Props> = () => {
     const [showModalConfig, setShowModalConfig] = useState<boolean>(false)
     const [apiID, setApiID] = useState<string>("")
-    const inputRef = useRef<HTMLInputElement>(null)
     return <Router>
         <div>
             <Navbar bg="dark" variant="dark" style={{justifyContent: "space-between"}}>
@@ -31,34 +31,10 @@ const RouterNavigator: FC<Props> = () => {
                 </Button>
             </Navbar>
 
-            <Modal show={showModalConfig} onHide={()=> setShowModalConfig(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Configurazione</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {showModalConfig && apiID &&
-                        <p> API Key attuale: {apiID}</p>
-                    }
-                    <p>
-                    Inserisci un API Key:
-                    </p>
-                    <input className={"col-12"} ref={inputRef}/>
-
-                </Modal.Body>
-                <Modal.Footer>
-
-                    <Button
-                        onClick={() => {
-                            if(inputRef && inputRef.current) {
-                                setApiID(inputRef.current.value)
-                                setShowModalConfig(false)
-                            }
-                        }}
-                        variant="primary" >
-                        Salva
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            <ConfigurationModal
+                showModalConfig={showModalConfig}
+                setShowModalConfig={setShowModalConfig}
+                setApiID={setApiID}/>
 
             <div>
                 <Row className={"no-gutters"}>
