@@ -1,11 +1,11 @@
 a {
-	font-size: calc(20px + 2vmin);
+  font-size: calc(20px + 2vmin);
 }
 
 .buttonCogIcon {
-	float: right;
+  float: right;
 }
 .cogIcon {
-	color: white;
-	font-size: calc(20px + 2vmin);
+  color: white;
+  font-size: calc(20px + 2vmin);
 }

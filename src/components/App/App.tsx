@@ -1,13 +1,13 @@
-import React, {FC} from 'react';
-import './App.css';
+import React, { FC } from "react";
+import "./App.css";
 import RouterNavigator from "../RouterNavigator/RouterNavigator";
 
 const App: FC = () => {
   return (
     <div className="App">
-      <RouterNavigator/>
+      <RouterNavigator />
     </div>
   );
-}
+};
 
 export default App;
