@@ -62,7 +62,7 @@ const RouterNavigator: FC<props> = () => {
             render={(props: any) => (
               <DayPanelContainer {...props} apiID={apiID} />
             )}
-          ></Route>
+          />
           <Redirect to="/Homepage/Today" />
         </Switch>
       </div>
