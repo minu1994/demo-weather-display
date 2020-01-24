@@ -1,32 +1,24 @@
-import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCloudRain,
-  faCloudSun,
-  faSun
-} from "@fortawesome/free-solid-svg-icons";
+import React, { FC } from "react";
 import { Col, Row } from "react-bootstrap";
 import Moment from "react-moment";
 import "./DayPanel.css";
+import { matcherWeather } from "../../Utils";
 
-const DayPanel = ({ cityData }: { cityData: any }) => {
-  function matcherWeather(main: string) {
-    if (main === "Clear") return <FontAwesomeIcon icon={faSun} />;
-    if (main === "Clouds") return <FontAwesomeIcon icon={faCloudSun} />;
-    if (main === "Rain") return <FontAwesomeIcon icon={faCloudRain} />;
-  }
+interface props {
+  cityData: any;
+}
+const DayPanel: FC<props> = ({ cityData }) => {
   console.log("city data: ", cityData);
   if (!cityData) return null;
 
-  if (cityData.cod === "404") {
+  if (cityData.cod == 404) {
     return (
       <Col xs={12} sm={6}>
         <div className={"DayPanel Card"}>
           <section style={{ fontSize: "calc(30px + 2vmin)", padding: 20 }}>
             Città non trovata.
             <p style={{ fontSize: "calc(20px + 2vmin)" }}>
-              {" "}
-              id città: {cityData.cityID}{" "}
+              id città: {cityData.cityID}
             </p>
           </section>
         </div>
@@ -50,17 +42,15 @@ const DayPanel = ({ cityData }: { cityData: any }) => {
               <span style={{ fontSize: "calc(10px + 2vmin)" }}>
                 <Moment unix format="DD/MM/YYYY HH:mm">
                   {cityData.dt}
-                </Moment>{" "}
+                </Moment>
               </span>
             </Col>
             <Col xs={6}>
               <div style={{ fontSize: "calc(25px + 2vmin)" }}>
-                {" "}
-                {cityData.name}{" "}
+                {cityData.name}
               </div>
               <span style={{ fontSize: "calc(30px + 2vmin)" }}>
-                {" "}
-                {cityData.main.temp}°{" "}
+                {cityData.main.temp}°
               </span>
             </Col>
           </Row>

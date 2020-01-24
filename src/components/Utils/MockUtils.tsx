@@ -1,4 +1,4 @@
-import { GERMAN_BERLIN_ID, ITALY_MILAN_ID } from "./ApiUtils";
+import { GERMAN_BERLIN_ID, ITALY_MILAN_ID } from "./IdsFromServer";
 
 export function getMock(cityID: number) {
   if (cityID === ITALY_MILAN_ID) {

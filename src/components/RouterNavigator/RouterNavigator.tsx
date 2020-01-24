@@ -9,15 +9,15 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import DayPanelContainer from "../DayPanelContainer/DayPanelContainer";
-import WarningDatiFittizi from "./WarningDatiFittizi";
-import ColumnNavLink from "./ColumnNavLink";
-import ConfigurationModal from "./ConfigurationModal";
+import WarningDatiFittizi from "../stateless/WarningDatiFittizi";
+import ColumnNavLink from "../stateless/ColumnNavLink";
+import ConfigurationModal from "../ConfigurationModal";
+import DayPanelContainer from "../DayPanelContainer";
 
-interface Props {
+interface props {
   // no props
 }
-const RouterNavigator: FC<Props> = () => {
+const RouterNavigator: FC<props> = () => {
   const [showModalConfig, setShowModalConfig] = useState<boolean>(false);
   const [apiID, setApiID] = useState<string>("");
   return (
@@ -46,8 +46,8 @@ const RouterNavigator: FC<Props> = () => {
 
         <div>
           <Row className={"no-gutters"}>
-            <ColumnNavLink to={"/Today"} label={"Oggi"} />
-            <ColumnNavLink to={"/Tomorrow"} label={"Domani"} />
+            <ColumnNavLink to={"/Homepage/Today"} label={"Oggi"} />
+            <ColumnNavLink to={"/Homepage/Tomorrow"} label={"Domani"} />
           </Row>
         </div>
 
@@ -56,13 +56,14 @@ const RouterNavigator: FC<Props> = () => {
           onClickCog={() => setShowModalConfig(true)}
         />
         <Switch>
-          <Route path="/Today">
-            {<DayPanelContainer apiID={apiID} dayReference="Today" />}
-          </Route>
-          <Route path="/Tomorrow">
-            {<DayPanelContainer apiID={apiID} dayReference="Tomorrow" />}
-          </Route>
-          <Redirect to="Today" />
+          <Route
+            exact
+            path="/Homepage/:dayReference"
+            render={(props: any) => (
+              <DayPanelContainer {...props} apiID={apiID} />
+            )}
+          ></Route>
+          <Redirect to="/Homepage/Today" />
         </Switch>
       </div>
     </Router>

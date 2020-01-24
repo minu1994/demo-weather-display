@@ -1,4 +1,7 @@
-import { GERMAN_BERLIN_ID, ITALY_MILAN_ID } from "../../Utils/ApiUtils";
+import {
+  GERMAN_BERLIN_ID,
+  ITALY_MILAN_ID
+} from "../../components/Utils/IdsFromServer";
 import {
   CityState,
   EDIT_CITY_OBJECTS,

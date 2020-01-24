@@ -16,10 +16,9 @@ const WarningDatiFittizi: FC<WarningDatiFittiziProps> = ({
       <Alert.Heading>Attenzione</Alert.Heading>
       <p>
         I dati che stai visualizzando sono fittizi. Inserire l'api key cliccando
-        su{" "}
+        su
         <span onClick={onClickCog}>
-          {" "}
-          <FontAwesomeIcon icon={faCog} />{" "}
+          <FontAwesomeIcon icon={faCog} />
         </span>
         .
         <br />

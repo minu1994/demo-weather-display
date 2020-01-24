@@ -1,53 +1,31 @@
 import React, { FC, useEffect, useState } from "react";
 import { Alert, Row } from "react-bootstrap";
-import { getMock } from "../../Utils/MockUtils";
-import DayPanel from "./DayPanel";
+import { getMock } from "../Utils";
+import DayPanel from "../stateless/DayPanel";
 import { useSelector } from "react-redux";
-import { CityObject } from "../../store/actions/ActiontTypes";
-import { getURL, isInvalidApiKey } from "./DayPanelUtils";
+import { isInvalidApiKey } from "./DayPanelUtils";
+import { getCitiesURL, getCityDataFromFetch, getCityIDs } from "./utils";
 
-interface Props {
-  dayReference: string;
+interface props {
   apiID?: string;
+  match: any;
 }
 
-const DayPanelContainer: FC<Props> = ({ dayReference, apiID }) => {
+const DayPanelContainer: FC<props> = ({ apiID, match }) => {
+  const dayReference = match.params.dayReference;
+
   const cityObjects = useSelector(
     (state: any) => state.cityObjectsReducer.cityObjects
   );
-
-  // cityIDs viene inizializzato ad Array Vuoto in caso nessuna città viene fornita dalla configurazione
-  const cityIDs = cityObjects
-    ? cityObjects.map((cityObj: CityObject) => cityObj.value)
-    : [];
-
-  const citiesURL = cityIDs.map(
-    (cityID: number) =>
-      getURL(dayReference) + "&appid=" + apiID + "&id=" + cityID
-  );
+  const cityIDs = getCityIDs(cityObjects);
+  const citiesURL = getCitiesURL(cityIDs, dayReference, apiID);
   const [stateCities, setStateCities] = useState<any>(
     cityIDs.map((cityID: number) => getMock(cityID))
   );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    const getCityDataFromFetch = function(json: any, index: number) {
-      if (json && (json.cod === "401" || json.cod === "404")) {
-        json.cityID = cityIDs[index];
-        return json;
-      }
-
-      let cityData = undefined;
-      if (dayReference.toUpperCase() === "TODAY") {
-        cityData = json;
-      } else {
-        cityData = json.list[7];
-        cityData.name = json.city.name;
-      }
-      return cityData;
-    };
     console.log("apiid:", apiID);
-
     if (!apiID) {
       return;
     }
@@ -57,7 +35,9 @@ const DayPanelContainer: FC<Props> = ({ dayReference, apiID }) => {
         .then(responses => Promise.all(responses.map((res: any) => res.json())))
         .then(jsons => {
           setStateCities(
-            jsons.map((json, index) => getCityDataFromFetch(json, index))
+            jsons.map((json, index) =>
+              getCityDataFromFetch(json, index, cityIDs, dayReference)
+            )
           );
           setIsLoading(false);
         });
@@ -87,4 +67,4 @@ const DayPanelContainer: FC<Props> = ({ dayReference, apiID }) => {
   );
 };
 
-export default DayPanelContainer;
+export default React.memo(DayPanelContainer);

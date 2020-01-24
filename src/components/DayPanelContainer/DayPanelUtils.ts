@@ -10,7 +10,7 @@ export function getURL(dayReference: string) {
 export function isInvalidApiKey(stateCities: any) {
   let isInvalid = false;
   stateCities.forEach((city: any) => {
-    if (city && city.cod === 401) {
+    if (city && city.cod == 401) {
       isInvalid = true;
     }
   });

@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from "react";
+import React, { FC, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import Select from "react-select";
 import {
@@ -6,11 +6,12 @@ import {
   GERMAN_BERLIN_ID,
   ITALY_MILAN_ID,
   ITALY_ROME_ID
-} from "../../Utils/ApiUtils";
+} from "../Utils/IdsFromServer";
 import { useDispatch, useSelector } from "react-redux";
 import { EDIT_CITY_OBJECTS_ACTION } from "../../store/actions/ActionCreators";
+import PaddingDiv from "../stateless/PaddingDiv";
 
-interface Props {
+interface props {
   showModalConfig: boolean;
   setShowModalConfig: (value: boolean) => void;
   setApiID: (value: string) => void;
@@ -23,7 +24,7 @@ const optionsSelect = [
   { value: GB_LONDON_ID, label: "Londra" }
 ];
 
-export const ConfigurationModal: FC<Props> = ({
+export const ConfigurationModal: FC<props> = ({
   showModalConfig,
   setShowModalConfig,
   setApiID
@@ -33,14 +34,14 @@ export const ConfigurationModal: FC<Props> = ({
   );
   const [inputValue, setInputValue] = useState<string>("");
   const dispatch = useDispatch();
-
+  console.log("render");
   return (
     <Modal show={showModalConfig} onHide={() => setShowModalConfig(false)}>
       <Modal.Header closeButton>
         <Modal.Title>Configurazione</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <DivWithPadding>
+        <PaddingDiv>
           <div>
             <div> Inserisci un API Key: </div>
           </div>
@@ -50,8 +51,8 @@ export const ConfigurationModal: FC<Props> = ({
             value={inputValue}
             onChange={e => setInputValue(e.target.value)}
           />
-        </DivWithPadding>
-        <DivWithPadding>
+        </PaddingDiv>
+        <PaddingDiv>
           <div> Inserisci le città da visualizzare:</div>
           <Select
             isMulti={true}
@@ -59,7 +60,7 @@ export const ConfigurationModal: FC<Props> = ({
             onChange={selOpt => setSelectedOptions(selOpt)}
             options={optionsSelect}
           />
-        </DivWithPadding>
+        </PaddingDiv>
       </Modal.Body>
       <Modal.Footer>
         <Button
@@ -76,8 +77,5 @@ export const ConfigurationModal: FC<Props> = ({
     </Modal>
   );
 };
-const DivWithPadding = ({ children }: { children: ReactNode }) => (
-  <div style={{ padding: 10 }}>{children}</div>
-);
 
 export default ConfigurationModal;
