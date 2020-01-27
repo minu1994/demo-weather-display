@@ -3,20 +3,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog } from "@fortawesome/free-solid-svg-icons";
 import React, { FC } from "react";
 
-interface WarningDatiFittiziProps {
+interface props {
   isVisible: boolean | undefined;
   onClickCog: () => void;
 }
-const WarningDatiFittizi: FC<WarningDatiFittiziProps> = ({
-  isVisible,
-  onClickCog
-}) =>
-  isVisible ? (
+const WarningDatiFittizi: FC<props> = ({ isVisible, onClickCog }) => {
+  if (!isVisible) return null;
+  return (
     <Alert variant="warning">
       <Alert.Heading>Attenzione</Alert.Heading>
       <p>
         I dati che stai visualizzando sono fittizi. Inserire l'api key cliccando
-        su
+        su{" "}
         <span onClick={onClickCog}>
           <FontAwesomeIcon icon={faCog} />
         </span>
@@ -25,6 +23,7 @@ const WarningDatiFittizi: FC<WarningDatiFittiziProps> = ({
         L'api key è reperibile dal sito https://openweathermap.org/api
       </p>
     </Alert>
-  ) : null;
+  );
+};
 
 export default WarningDatiFittizi;

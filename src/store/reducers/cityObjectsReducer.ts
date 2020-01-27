@@ -1,7 +1,7 @@
 import {
   GERMAN_BERLIN_ID,
   ITALY_MILAN_ID
-} from "../../components/Utils/IdsFromServer";
+} from "../../components/utils/ids-from-server";
 import {
   CityState,
   EDIT_CITY_OBJECTS,

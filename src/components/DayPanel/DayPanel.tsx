@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Col, Row } from "react-bootstrap";
 import Moment from "react-moment";
 import "./DayPanel.css";
-import { matcherWeather } from "../../Utils";
+import { matcherWeather } from "../utils";
 
 interface props {
   cityData: any;
@@ -18,7 +18,7 @@ const DayPanel: FC<props> = ({ cityData }) => {
           <section style={{ fontSize: "calc(30px + 2vmin)", padding: 20 }}>
             Città non trovata.
             <p style={{ fontSize: "calc(20px + 2vmin)" }}>
-              id città: {cityData.cityID}
+              id città: {cityData.id}
             </p>
           </section>
         </div>

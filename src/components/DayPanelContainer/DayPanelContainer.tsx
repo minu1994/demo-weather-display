@@ -1,10 +1,14 @@
 import React, { FC, useEffect, useState } from "react";
 import { Alert, Row } from "react-bootstrap";
-import { getMock } from "../Utils";
-import DayPanel from "../stateless/DayPanel";
+import { getMock } from "../utils";
+import DayPanel from "../DayPanel";
 import { useSelector } from "react-redux";
-import { isInvalidApiKey } from "./DayPanelUtils";
-import { getCitiesURL, getCityDataFromFetch, getCityIDs } from "./utils";
+import {
+  getCitiesURL,
+  getCityDataFromFetch,
+  getCityIDs,
+  isInvalidApiKey
+} from "./utils";
 
 interface props {
   apiID?: string;
@@ -59,12 +63,12 @@ const DayPanelContainer: FC<props> = ({ apiID, match }) => {
     <div style={{ margin: 30 }}>
       <Row>
         {stateCities &&
-          stateCities.map((city: any, index: number) => (
-            <DayPanel key={index} cityData={city} />
-          ))}
+          stateCities.map((city: any) => {
+            return <DayPanel key={city.id} cityData={city} />;
+          })}
       </Row>
     </div>
   );
 };
 
-export default React.memo(DayPanelContainer);
+export default DayPanelContainer;

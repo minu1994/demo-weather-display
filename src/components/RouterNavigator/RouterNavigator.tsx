@@ -9,14 +9,15 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import WarningDatiFittizi from "../stateless/WarningDatiFittizi";
-import ColumnNavLink from "../stateless/ColumnNavLink";
+import WarningDatiFittizi from "../WarningDatiFittizi";
+import ColumnNavLink from "../ColumnNavLink";
 import ConfigurationModal from "../ConfigurationModal";
 import DayPanelContainer from "../DayPanelContainer";
 
 interface props {
   // no props
 }
+
 const RouterNavigator: FC<props> = () => {
   const [showModalConfig, setShowModalConfig] = useState<boolean>(false);
   const [apiID, setApiID] = useState<string>("");

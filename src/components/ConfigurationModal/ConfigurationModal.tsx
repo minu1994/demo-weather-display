@@ -6,10 +6,10 @@ import {
   GERMAN_BERLIN_ID,
   ITALY_MILAN_ID,
   ITALY_ROME_ID
-} from "../Utils/IdsFromServer";
+} from "../utils/ids-from-server";
 import { useDispatch, useSelector } from "react-redux";
 import { EDIT_CITY_OBJECTS_ACTION } from "../../store/actions/ActionCreators";
-import PaddingDiv from "../stateless/PaddingDiv";
+import PaddingDiv from "../PaddingDiv";
 
 interface props {
   showModalConfig: boolean;

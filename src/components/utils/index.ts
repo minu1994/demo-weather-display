@@ -1,4 +1,4 @@
 import matcherWeather from "./matcherWeather";
-import { getMock } from "./MockUtils";
+import { getMock } from "./mockUtils";
 
 export { matcherWeather, getMock };

@@ -1,5 +1,23 @@
 import { CityObject } from "../../store/actions/ActiontTypes";
-import { getURL } from "./DayPanelUtils";
+
+function getURL(dayReference: string) {
+  if (dayReference.toUpperCase() === "TODAY") {
+    return "https://api.openweathermap.org/data/2.5/weather?units=metric";
+  } else if (dayReference.toUpperCase() === "TOMORROW") {
+    return "https://api.openweathermap.org/data/2.5/forecast?units=metric";
+  }
+  return "";
+}
+
+export function isInvalidApiKey(stateCities: any) {
+  let isInvalid = false;
+  stateCities.forEach((city: any) => {
+    if (city && city.cod == 401) {
+      isInvalid = true;
+    }
+  });
+  return isInvalid;
+}
 
 export function getCityIDs(cityObjects: any) {
   return cityObjects
@@ -18,15 +36,13 @@ export function getCitiesURL(
   );
 }
 
-export const getCityDataFromFetch = function(
+export function getCityDataFromFetch(
   json: any,
   index: number,
   cityIDs: any,
   dayReference: string
 ) {
-  console.log("json: ", json);
   if (json && (json.cod == 401 || json.cod == 404)) {
-    json.cityID = cityIDs[index];
     return json;
   }
 
@@ -38,4 +54,4 @@ export const getCityDataFromFetch = function(
     cityData.name = json.city.name;
   }
   return cityData;
-};
+}
