@@ -33,7 +33,7 @@ const DayPanelContainer: FC<props> = ({ apiID, match }) => {
     if (!apiID) {
       return;
     }
-    if (apiID || dayReference) {
+    if (dayReference) {
       setIsLoading(true);
       Promise.all(citiesURL.map((url: string) => fetch(url)))
         .then(responses => Promise.all(responses.map((res: any) => res.json())))

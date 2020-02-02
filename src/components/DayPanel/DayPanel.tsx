@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { Col, Row } from "react-bootstrap";
 import Moment from "react-moment";
 import "./DayPanel.css";
-import { matcherWeather } from "../utils";
+import { matcherWeather } from "./day-panel-utils";
 
 interface props {
   cityData: any;

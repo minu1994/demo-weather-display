@@ -6,10 +6,8 @@ import {
   faSun
 } from "@fortawesome/free-solid-svg-icons";
 
-const matcherWeather = (main: string) => {
+export const matcherWeather = (main: string) => {
   if (main === "Clear") return <FontAwesomeIcon icon={faSun} />;
   if (main === "Clouds") return <FontAwesomeIcon icon={faCloudSun} />;
   if (main === "Rain") return <FontAwesomeIcon icon={faCloudRain} />;
 };
-
-export default matcherWeather;
